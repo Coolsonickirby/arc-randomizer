@@ -201,7 +201,7 @@ fn get_biggest_size_from_path(path: &Path) -> usize {
     biggest_size
 }
 
-#[skyline::main(name = "arc-randomizer")]
+#[skyline::main(name = "arc-randomizer-folder")]
 pub fn main() {
     if !Path::new(RANDOMIZE_PATH).exists() {
         return;
