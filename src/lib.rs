@@ -220,15 +220,20 @@ pub fn main() {
                     let inner_path_str = format!("{}", &inner_path.display());
                     for entry in WalkDir::new(&inner_path) {
                         let entry = entry.unwrap();
+                        let entry_str = format!("{}", &entry.path().display());
+                        
+                        if inner_path_str.len() == entry_str.len(){
+                            continue
+                        }
 
-                        let arc_path = &format!("{}", &entry.path().display())
+                        let arc_path = format!("{}", entry_str)
                             [inner_path_str.len() + 1..]
                             .replace(";", ":")
                             .replace(".mp4", ".webm");
                         
                         if arc_path.contains(".") {
                             // File or Folder found
-                            let hash = hash40(arc_path).as_u64();
+                            let hash = hash40(&arc_path).as_u64();
 
                             let callback: Callback = Callback {
                                 size: {
