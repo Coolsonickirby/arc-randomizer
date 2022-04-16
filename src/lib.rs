@@ -80,7 +80,6 @@ pub fn pick_random_folder_for_parent(parent_path: String) {
         .lock()
         .unwrap()
         .insert(parent_path, folders[random_result].clone());
-    println!("Selected {}!", folders[random_result]);
 }
 
 pub fn random_file_select(directory: &Path) -> Result<String> {
@@ -222,14 +221,14 @@ pub fn main() {
                     for entry in WalkDir::new(&inner_path) {
                         let entry = entry.unwrap();
 
-                        if format!("{}", &entry.path().display()).contains(".") {
+                        let arc_path = &format!("{}", &entry.path().display())
+                            [inner_path_str.len() + 1..]
+                            .replace(";", ":")
+                            .replace(".mp4", ".webm");
+                        
+                        if arc_path.contains(".") {
                             // File or Folder found
-                            let arc_path = &format!("{}", &entry.path().display())
-                                [inner_path_str.len() + 1..]
-                                .replace(";", ":")
-                                .replace(".mp4", ".webm");
                             let hash = hash40(arc_path).as_u64();
-                            println!("{}", arc_path);
 
                             let callback: Callback = Callback {
                                 size: {
@@ -272,7 +271,6 @@ pub fn main() {
         });
 
     for (key, value) in &*CALLBACKS.lock().unwrap() {
-        println!("{:#x}", *key);
         match value.callback_type {
             CallbackType::Arc => arc_file_callback::install(*key, value.size),
             CallbackType::Stream => stream_file_callback::install(*key),
