@@ -14,7 +14,7 @@ use std::{
 };
 use walkdir::WalkDir;
 
-const RANDOMIZE_PATH: &str = "rom:/Randomizer/";
+const RANDOMIZE_PATH: &str = "sd:/ultimate/Randomizer/";
 
 enum CallbackType {
     Arc,
@@ -40,6 +40,10 @@ lazy_static! {
         Mutex::new(m)
     };
     static ref HASH_TO_ARC_PATH: Mutex<HashMap<u64, String>> = {
+        let m = HashMap::new();
+        Mutex::new(m)
+    };
+    static ref HASH_TO_ACTUAL_PATH: Mutex<HashMap<u64, String>> = {
         let m = HashMap::new();
         Mutex::new(m)
     };
@@ -111,7 +115,7 @@ fn get_path_from_hash(hash: &u64) -> PathBuf {
     let parent_folder = PARENT_FOLDER.lock().unwrap().get(&hash).unwrap().clone();
     path.push(&parent_folder);
     path.push(USE_FOLDER_FROM_PARENT.lock().unwrap().get(&parent_folder).unwrap());
-    path.push(HASH_TO_ARC_PATH.lock().unwrap().get(&hash).unwrap());
+    path.push(HASH_TO_ACTUAL_PATH.lock().unwrap().get(&hash).unwrap());
     path
 }
 
@@ -129,8 +133,7 @@ fn randomize_folders(_hash: u64, _data: &mut [u8]) -> Option<usize> {
 #[arc_callback]
 fn arc_file_callback(hash: u64, data: &mut [u8]) -> Option<usize> {
     let path = get_path_from_hash(&hash);
-    let _parent_folder = PARENT_FOLDER.lock().unwrap().get(&hash).unwrap().clone();
-    // println!("\nPath to use for parent: {}\n\nARC Path: {}\n\nPath: {}", USE_FOLDER_FROM_PARENT.lock().unwrap().get(&parent_folder).unwrap(), HASH_TO_ARC_PATH.lock().unwrap().get(&hash).unwrap(), path.display());
+    println!("ARC Path: {}\n\nPath: {}", HASH_TO_ARC_PATH.lock().unwrap().get(&hash).unwrap(), path.display());
     let res = {
         if path.is_dir() {
             random_file_select(&path)
@@ -152,7 +155,7 @@ fn arc_file_callback(hash: u64, data: &mut [u8]) -> Option<usize> {
                 Ok(file) => {
                     // Shoutouts to Genwald
                     data[..file.len()].copy_from_slice(&file);
-            
+
                     Some(file.len())
                 },
                 Err(_err) => {
@@ -229,7 +232,11 @@ pub fn main() {
                         let arc_path = format!("{}", entry_str)
                             [inner_path_str.len() + 1..]
                             .replace(";", ":")
-                            .replace(".mp4", ".webm");
+                            .replace(".mp4", ".webm")
+                            .to_lowercase();
+
+                        let actual_path = &format!("{}", entry_str)
+                            [inner_path_str.len() + 1..];
                         
                         if arc_path.contains(".") {
                             // File or Folder found
@@ -270,6 +277,10 @@ pub fn main() {
                                 .lock()
                                 .unwrap()
                                 .insert(hash, arc_path.to_string());
+                            HASH_TO_ACTUAL_PATH
+                                .lock()
+                                .unwrap()
+                                .insert(hash, actual_path.to_string());
                         }
                     }
                 });
