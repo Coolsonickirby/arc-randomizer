@@ -1,7 +1,7 @@
 # Arc Randomizer
 ## Prerequisites
-- [ARCropolis 1.1.3 or higher](https://github.com/Raytwo/ARCropolis/releases/latest)
-- [Skyline (Should come with ARCropolis)](https://github.com/skyline-dev/skyline/releases/tag/beta)
+- [ARCropolis 3.3.0 or higher](https://github.com/Raytwo/ARCropolis/releases/latest)
+- [Skyline](https://github.com/skyline-dev/skyline/releases/tag/beta)
 
 ## Setup
 Download the latest version of this plugin and put it in:
@@ -10,14 +10,24 @@ Download the latest version of this plugin and put it in:
 ## Usage
 Create a folder called `Randomizer` in the following path:
 
-`sd:/atmosphere/contents/01006A800016E000/romfs/`
+`sd:/ultimate/`
 
-Then replicate the ARC path for the file you want to randomize.
-
-For Example:
-
-Stream - `sd:/atmosphere/contents/01006A800016E000/romfs/Randomizer/stream;/sound/bgm/bgm_crs2_02_senjyou.nus3audio/*.nus3audios`
-(Randomizes song anytime the song "Battlefield" is played)
-
-Arc - `sd:/atmosphere/contents/01006A800016E000/romfs/Randomizer/ui/message/msg_bgm.msbt/*.msbt`
-(Randomizes msbt file anytime msg_bgm.msbt is loaded)
+Inside the Randomizer folder, create a parent folder for the group of mods you want to randomize
+```
+- sd
+  - ultimate
+    - Randomizer
+      - Final Destination Mods
+```
+then put the mods in there. So in the end, it should look something like this
+```
+- sd
+  - ultimate
+    - Randomizer
+      - Final Destination Mods
+        - Rainbow FD
+        - WoLFD
+        - Dark Final Destination
+        - ....
+```
+You can have multiple parent and child folders.
