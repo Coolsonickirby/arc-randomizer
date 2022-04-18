@@ -31,3 +31,5 @@ then put the mods in there. So in the end, it should look something like this
         - ....
 ```
 You can have multiple parent and child folders.
+
+### Warning: If your mod uses file addition, make sure that mod is in `sd:/ultimate/mods` and is enabled!
